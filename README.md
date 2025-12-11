@@ -1,6 +1,6 @@
  SmartDoor: Raspberry Pi Secure Door Lock System
 
-This repository contains my CSC 6370 Smart Door Lock Project, built using a Raspberry Pi, servo motor, RFID module, keypad, buzzer, and a Flask web interface.  
+This repository contains my CSC 6228 Smart Door Lock Project, built using a Raspberry Pi, servo motor, RFID module, keypad, buzzer, and a Flask web interface.  
 The system allows locking/unlocking the door from multiple sources: RFID tag, password, keypad input, or the admin web page.
 
 🚪 Project Features
@@ -74,7 +74,7 @@ http://100.70.90.28:5000
 
  👤 Author
 Liberty Ikpeogu
-Georgia State University CSC 6370  
+Georgia State University CSC 6228  
 GitHub: Librey
 
 
