@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Door Locked</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; background: #eef2f7; text-align: center; padding-top: 80px; }
+        h1 { color: #000; }
+        input[type="password"] {
+            width: 80%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: 2px solid #ccc;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            background: #4a90e2;
+            color: white;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Door Locked ✔</h1>
+
+    <form action="/unlock" method="POST">
+        <input type="password" name="pin" placeholder="Enter PIN">
+        <br><br>
+        <button type="submit">Unlock</button>
+    </form>
+
+</body>
+</html>

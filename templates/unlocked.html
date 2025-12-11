@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Door Unlocked</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; background: #eef2f7; text-align: center; padding-top: 60px; }
+        h1 { color: #4a90e2; }
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            background: #d9534f;
+            color: white;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        #countdown { margin-top: 15px; font-size: 18px; color: #444; }
+    </style>
+</head>
+<body>
+
+    <h1>Door Unlocked ✔</h1>
+
+    <form action="/lock" method="POST">
+        <button type="submit">Lock Door</button>
+    </form>
+
+    <div id="countdown">Auto-locking in 30 seconds...</div>
+
+    <script>
+        let t = 30;
+        setInterval(() => {
+            t--;
+            document.getElementById("countdown").innerText = "Auto-locking in " + t + " seconds...";
+            if (t <= 0) {
+                document.getElementById("countdown").innerText = "Locking...";
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>

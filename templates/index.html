@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Door Dashboard</title>
+
+    <style>
+        body {
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+        }
+
+        input[type="password"] {
+            width: 260px;
+            height: 38px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 110px;
+            height: 42px;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #unlockBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #lockBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        #timerText {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #444;
+        }
+
+        a {
+            color: #555;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Smart Door Dashboard</h1>
+
+    <input type="password" id="passwordInput" placeholder="Enter Password">
+
+    <br>
+
+    <button id="unlockBtn" onclick="unlock()">Unlock</button>
+    <button id="lockBtn" onclick="manualLock()">Lock</button>
+
+    <p id="status">Status: 🔒 Door Locked</p>
+    <p id="timerText"></p>
+
+    <p>
+        <a href="/change_password_page">Change Password</a>
+    </p>
+
+    <script>
+        let autoLockInterval = null;
+
+        function updateStatusText(state) {
+            if (state === "locked") {
+                document.getElementById("status").innerHTML = "Status: 🔒 Door Locked";
+            } else {
+                document.getElementById("status").innerHTML = "Status: 🔓 Door Unlocked";
+            }
+        }
+
+        function startCountdown(seconds) {
+            // Stop any existing countdown
+            if (autoLockInterval) {
+                clearInterval(autoLockInterval);
+            }
+
+            let remaining = seconds;
+
+            document.getElementById("timerText").innerText =
+                "Auto-lock in " + remaining + " seconds";
+
+            autoLockInterval = setInterval(() => {
+                remaining--;
+
+                if (remaining <= 0) {
+                    clearInterval(autoLockInterval);
+                    autoLockInterval = null;
+                    document.getElementById("timerText").innerText = "Auto-lock activated.";
+                } else {
+                    document.getElementById("timerText").innerText =
+                        "Auto-lock in " + remaining + " seconds";
+                }
+            }, 1000);
+        }
+
+        function unlock() {
+            const pw = document.getElementById("passwordInput").value;
+
+            fetch("/unlock", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({password: pw})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "unlocked") {
+                    updateStatusText("unlocked");
+                    startCountdown(30); // Start fresh countdown
+                } else if (data.status === "wrong_password") {
+                    alert("Wrong password!");
+                } else if (data.status === "alarm") {
+                    alert("TOO MANY WRONG ATTEMPTS — Alarm Triggered!");
+                }
+            });
+        }
+
+        function manualLock() {
+            fetch("/lock", {
+                method: "POST"
+            })
+            .then(res => res.json())
+            .then(data => {
+                updateStatusText("locked");
+
+                // CLEAR countdown timer & remove text
+                if (autoLockInterval) {
+                    clearInterval(autoLockInterval);
+                    autoLockInterval = null;
+                }
+
+                document.getElementById("timerText").innerText = "";
+            });
+        }
+
+        // Auto-refresh status every 2 seconds (optional)
+        setInterval(() => {
+            fetch("/status")
+            .then(res => res.json())
+            .then(data => {
+                updateStatusText(data.state);
+            });
+        }, 2000);
+    </script>
+
+</body>
+</html>
